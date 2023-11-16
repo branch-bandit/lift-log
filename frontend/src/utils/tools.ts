@@ -25,7 +25,6 @@ export const getApiDataBySetType = async (setType: SetType): Promise<any> => {
 
 export const getApiDataByDate = async (date: string): Promise<any> => {
   const { data } = await axios.get(`http://localhost:3001/sets/?date=${date}`)
-  console.log(data)
   return data
 }
 
@@ -62,6 +61,5 @@ export const postNewSet = async (
 
 export const deleteSet = async (id: string): Promise<any> => {
   const response = await axios.delete(`http://localhost:3001/sets/${id}`)
-  console.log(response)
   return response
 }

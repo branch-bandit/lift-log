@@ -18,12 +18,10 @@ interface NewSetFormProps {
 }
 
 const NewSetForm: React.FC<NewSetFormProps> = ({ setNeedsUpdate }) => {
+  // todo error handling
   const [formState, setFormState] = useState<CreateSetFormParams>(
     initialState.formState
   )
-  //   const [messages, setMessages] = useState<
-  //     { message: string; isError: boolean }[]
-  //   >([])
 
   const setFormStateField = (key: string, value: string | boolean): void => {
     setFormState(prevState => ({ ...prevState, [key]: value }))
@@ -51,80 +49,71 @@ const NewSetForm: React.FC<NewSetFormProps> = ({ setNeedsUpdate }) => {
         onSubmit={handleSubmit}
         className="add-set-form"
       >
-        <div className="add-set-form-inner-container">
-          <label htmlFor="exercise_type">Exercise type</label>
-          <select
-            id="exercise_type"
-            onChange={e => setFormStateField('exerciseType', e.target.value)}
-          >
-            {Object.entries(SetTypeTitles).map((item, index) => {
-              return (
-                <option
-                  className="select-option"
-                  value={item[0]}
-                  key={index}
-                >
-                  {item[1]}
-                </option>
-              )
-            })}
-          </select>
-          <label htmlFor="reps_input">Number of reps</label>
-          <input
-            id="reps_input"
-            type="number"
-            placeholder="0"
-            value={formState.reps || ''}
-            onChange={e => setFormStateField('reps', e.target.value)}
-          />
-          <label htmlFor="weight_input">Weight used</label>
-          <input
-            id="weight_input"
-            type="number"
-            placeholder="100"
-            value={formState.weight || ''}
-            onChange={e => setFormStateField('weight', e.target.value)}
-          />
-          <label>Was the set to failure?</label>
-          <input
-            type="checkbox"
-            className="add-set-form-checkbox"
-            checked={formState.wasFailure}
-            onChange={() =>
-              setFormStateField('wasFailure', !formState.wasFailure)
-            }
-          />
-          {formState.wasFailure ? (
-            <>
-              <label htmlFor="failure_rep">On which rep?</label>
-              <input
-                id="weight_input"
-                type="number"
-                value={formState.failureRep || ''}
-                onChange={e => setFormStateField('weight', e.target.value)}
-              />
-            </>
-          ) : (
-            <div />
-          )}
-        </div>
-        <button
-          type="submit"
-          className="add-set-form-submit-button"
-        >
-          Submit set
-        </button>
-        {/* {messages.map((messageObj, index) => (
-          <p key={index}>
-            <span
-              role="img"
-              aria-label={messageObj.isError ? 'error' : 'check'}
+        <div className="add-set-form-outer-container">
+          <div className="add-set-form-inner-container">
+            <label htmlFor="exercise_type">Exercise type</label>
+            <select
+              id="exercise_type"
+              onChange={e => setFormStateField('exerciseType', e.target.value)}
             >
-              {messageObj.isError ? '❌' : '✅'}
-            </span>
-            {messageObj.message}s
-          </p>
-        ))} */}
+              {Object.entries(SetTypeTitles).map((item, index) => {
+                return (
+                  <option
+                    className="select-option"
+                    value={item[0]}
+                    key={index}
+                  >
+                    {item[1]}
+                  </option>
+                )
+              })}
+            </select>
+            <label htmlFor="reps_input">Number of reps</label>
+            <input
+              id="reps_input"
+              type="number"
+              placeholder="0"
+              value={formState.reps || ''}
+              onChange={e => setFormStateField('reps', e.target.value)}
+            />
+            <label htmlFor="weight_input">Weight used</label>
+            <input
+              id="weight_input"
+              type="number"
+              placeholder="100"
+              value={formState.weight || ''}
+              onChange={e => setFormStateField('weight', e.target.value)}
+            />
+            <label>Was the set to failure?</label>
+            <input
+              type="checkbox"
+              className="add-set-form-checkbox"
+              checked={formState.wasFailure}
+              onChange={() =>
+                setFormStateField('wasFailure', !formState.wasFailure)
+              }
+            />
+            {formState.wasFailure ? (
+              <>
+                <label htmlFor="failure_rep">On which rep?</label>
+                <input
+                  id="weight_input"
+                  type="number"
+                  value={formState.failureRep || ''}
+                  onChange={e => setFormStateField('weight', e.target.value)}
+                />
+              </>
+            ) : (
+              <div />
+            )}
+          </div>
+          <button
+            type="submit"
+            className="add-set-form-submit-button"
+          >
+            Submit set
+          </button>
+        </div>
       </form>
     </>
   )
