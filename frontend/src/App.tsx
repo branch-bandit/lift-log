@@ -1,6 +1,7 @@
 import React, { FC, useState } from 'react'
 import NewSetForm from './components/NewSetForm/NewSetForm'
 import BrowseSets from './components/BrowseSets/BrowseSets'
+import './App.css'
 
 const App: FC = () => {
   const [needsUpdate, setNeedsUpdate] = useState<boolean>(false)

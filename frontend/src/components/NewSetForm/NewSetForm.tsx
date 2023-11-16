@@ -49,29 +49,10 @@ const NewSetForm: React.FC<NewSetFormProps> = ({ setNeedsUpdate }) => {
     <>
       <form
         onSubmit={handleSubmit}
-        style={{
-          width: '800px',
-          boxSizing: 'border-box',
-          margin: 'auto',
-          padding: '5vh 5vw 5vh 5vw',
-          fontFamily: 'roboto',
-          display: 'grid',
-          borderBottom: '1px solid grey',
-        }}
+        className="add-set-form"
       >
-        <div
-          style={{
-            padding: '0 100px 20px 100px',
-            marginBottom: '10px',
-            display: 'grid',
-            gridTemplateColumns: '63% 34%',
-            gridTemplateRows: '12% 12% 12% 12% 12%',
-            gap: '3vh',
-            height: '200px',
-          }}
-        >
+        <div className="add-set-form-inner-container">
           <label htmlFor="exercise_type">Exercise type</label>
-
           <select
             id="exercise_type"
             onChange={e => setFormStateField('exerciseType', e.target.value)}
@@ -79,7 +60,7 @@ const NewSetForm: React.FC<NewSetFormProps> = ({ setNeedsUpdate }) => {
             {Object.entries(SetTypeTitles).map((item, index) => {
               return (
                 <option
-                  style={{ margin: '8px' }}
+                  className="select-option"
                   value={item[0]}
                   key={index}
                 >
@@ -107,7 +88,7 @@ const NewSetForm: React.FC<NewSetFormProps> = ({ setNeedsUpdate }) => {
           <label>Was the set to failure?</label>
           <input
             type="checkbox"
-            style={{ height: '100%' }}
+            className="add-set-form-checkbox"
             checked={formState.wasFailure}
             onChange={() =>
               setFormStateField('wasFailure', !formState.wasFailure)
@@ -129,20 +110,19 @@ const NewSetForm: React.FC<NewSetFormProps> = ({ setNeedsUpdate }) => {
         </div>
         <button
           type="submit"
-          style={{ height: '36px', width: '500px', margin: 'auto' }}
+          className="add-set-form-submit-button"
         >
           Submit set
         </button>
         {/* {messages.map((messageObj, index) => (
           <p key={index}>
             <span
-              style={{ width: '20px', display: 'inline-block' }}
               role="img"
               aria-label={messageObj.isError ? 'error' : 'check'}
             >
               {messageObj.isError ? '❌' : '✅'}
             </span>
-            {messageObj.message}
+            {messageObj.message}s
           </p>
         ))} */}
       </form>

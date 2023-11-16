@@ -93,28 +93,8 @@ const BrowseSets: React.FC<BrowseSetsProps> = ({
 
   return (
     <>
-      <div
-        style={{
-          minWidth: '980px',
-          maxWidth: '980px',
-          boxSizing: 'border-box',
-          margin: 'auto',
-          padding: '5vh 5vw 5vh 5vw',
-          fontFamily: 'roboto',
-          display: 'grid',
-        }}
-      >
-        <div
-          style={{
-            height: '100px',
-            padding: '0 190px 0 190px',
-            display: 'grid',
-            gridTemplateColumns: '63% 34%',
-            gridTemplateRows: '30px 30px',
-            gap: '2vh',
-            borderBottom: '1px solid grey',
-          }}
-        >
+      <div className="browse-sets-outer-container">
+        <div className="browse-sets-inner-container">
           <label htmlFor="browse_sets_exercise_type">Browse sets by</label>
           <select
             id="query_type"
@@ -123,7 +103,7 @@ const BrowseSets: React.FC<BrowseSetsProps> = ({
             {Object.entries(GetSetsQueryTypeTitles).map((item, index) => {
               return (
                 <option
-                  style={{ margin: '8px' }}
+                  className="select-option"
                   value={item[0]}
                   key={index}
                 >
@@ -144,7 +124,7 @@ const BrowseSets: React.FC<BrowseSetsProps> = ({
                 {Object.entries(SetTypeTitles).map((item, index) => {
                   return (
                     <option
-                      style={{ margin: '8px' }}
+                      className="select-option"
                       value={item[0]}
                       key={index}
                     >

@@ -26,17 +26,17 @@ const ListItem: React.FC<ListItemProps> = ({ item, deleteItem }) => {
   const { date, exercise, reps, weight, failureAt } = itemInfoStrings
 
   return (
-    <li style={{ display: 'flex', borderBottom: '1px solid grey' }}>
-      <p style={{ width: '130px', paddingLeft: '70px' }}>{date}</p>
-      <p style={{ width: '170px' }}>{exercise}</p>
-      <p style={{ width: '100px' }}>{weight}</p>
-      <p style={{ width: '100px' }}>{reps}</p>
-      <p style={{ width: '100px' }}>{failureAt}</p>
+    <li className="list-of-sets-list-item">
+      <p className="list-of-sets-section-first">{date}</p>
+      <p className="list-of-sets-section-large">{exercise}</p>
+      <p className="list-of-sets-section-small">{weight}</p>
+      <p className="list-of-sets-section-small">{reps}</p>
+      <p className="list-of-sets-section-small">{failureAt}</p>
       <button
         onClick={() => deleteItem(item.id)}
-        style={{ height: '20px', width: '100px', marginTop: '12px' }}
+        className="list-of-sets-button"
       >
-        delete
+        Delete
       </button>
     </li>
   )
@@ -44,18 +44,15 @@ const ListItem: React.FC<ListItemProps> = ({ item, deleteItem }) => {
 
 const ListOfSets: React.FC<ListOfSetsProps> = ({ items, deleteItem }) => {
   return (
-    <>
-      <ul style={{ padding: '10px 0 10px 0' }}>
-        {items.map((item, index) => (
-          <ListItem
-            item={item}
-            key={item.id}
-            deleteItem={deleteItem}
-          />
-        ))}
-      </ul>
-      {/* <div style={{ marginTop: '20px' }}>{JSON.stringify(items)}</div> */}
-    </>
+    <ul className="list-of-sets-list">
+      {items.map((item, index) => (
+        <ListItem
+          item={item}
+          key={item.id}
+          deleteItem={deleteItem}
+        />
+      ))}
+    </ul>
   )
 }
 
