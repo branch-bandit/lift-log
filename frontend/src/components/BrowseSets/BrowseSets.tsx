@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { SetType } from '../../utils/common.types'
+import React, { useState, useEffect, SetStateAction, Dispatch } from 'react'
+import { ApiResponseSetItem, SetType } from '../../utils/common.types'
 import {
   BrowseSetsFormParams,
   GetSetsQueryTypeTitles,
@@ -7,11 +7,13 @@ import {
 } from './BrowseSets.types'
 import {
   checkDateStringFormat,
+  deleteSet,
   getApiData,
   getApiDataByDate,
   getApiDataBySetType,
 } from '../../utils/tools'
 import { SetTypeTitles } from '../NewSetForm/NewSetForm.types'
+import ListOfSets from '../ListOfSets/ListOfSets'
 
 const initialState = {
   formState: {
@@ -21,8 +23,16 @@ const initialState = {
   },
 }
 
-const BrowseSets: React.FC = () => {
-  const [apiData, setApiData] = useState([])
+interface BrowseSetsProps {
+  needsUpdate: boolean
+  setNeedsUpdate: Dispatch<SetStateAction<boolean>>
+}
+
+const BrowseSets: React.FC<BrowseSetsProps> = ({
+  needsUpdate,
+  setNeedsUpdate,
+}) => {
+  const [apiData, setApiData] = useState<ApiResponseSetItem[]>([])
   const [formState, setFormState] = useState<BrowseSetsFormParams>(
     initialState.formState
   )
@@ -32,24 +42,22 @@ const BrowseSets: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log('fetchData')
-      console.log(formState)
-      console.log(checkDateStringFormat(formState.date))
       if (formState.queryType === GetSetsQueryTypes.ALL) {
         await getApiData().then(data => {
-          console.log(data)
+          // console.log(data)
           setApiData(data)
+          setNeedsUpdate(false)
         })
       }
 
       if (
         formState.queryType === GetSetsQueryTypes.BY_DATE &&
-        checkDateStringFormat(formState.date) !== undefined
+        checkDateStringFormat(formState.date) !== false
       ) {
-        console.log(checkDateStringFormat(formState.date))
         await getApiDataByDate(formState.date as string).then(data => {
-          console.log(data)
+          // console.log(data)
           setApiData(data)
+          setNeedsUpdate(false)
         })
       }
 
@@ -59,14 +67,25 @@ const BrowseSets: React.FC = () => {
       ) {
         await getApiDataBySetType(formState.exerciseType as SetType).then(
           data => {
-            console.log(data)
+            // console.log(data)
             setApiData(data)
+            setNeedsUpdate(false)
           }
         )
       }
     }
     fetchData().catch(console.error)
-  }, [formState])
+  }, [formState, needsUpdate, setNeedsUpdate])
+
+  const handleRemoveSet = async (id: string) => {
+    await deleteSet(id)
+      .then(response => {
+        if (response && response.status === 200) {
+          setNeedsUpdate(true)
+        }
+      })
+      .catch(console.error)
+  }
 
   const setFormStateField = (key: string, value: string | boolean): void => {
     setFormState(prevState => ({ ...prevState, [key]: value }))
@@ -76,22 +95,24 @@ const BrowseSets: React.FC = () => {
     <>
       <div
         style={{
-          maxWidth: '600px',
+          minWidth: '980px',
+          maxWidth: '980px',
           boxSizing: 'border-box',
-          margin: '10px 20vw 10px 20vw',
-          padding: '10px 70px 10px 70px',
+          margin: 'auto',
+          padding: '5vh 5vw 5vh 5vw',
           fontFamily: 'roboto',
           display: 'grid',
         }}
       >
         <div
           style={{
-            padding: '3% 5% 3% 5%',
-            marginBottom: '10px',
+            height: '100px',
+            padding: '0 190px 0 190px',
             display: 'grid',
             gridTemplateColumns: '63% 34%',
             gridTemplateRows: '30px 30px',
             gap: '2vh',
+            borderBottom: '1px solid grey',
           }}
         >
           <label htmlFor="browse_sets_exercise_type">Browse sets by</label>
@@ -99,11 +120,12 @@ const BrowseSets: React.FC = () => {
             id="query_type"
             onChange={e => setFormStateField('queryType', e.target.value)}
           >
-            {Object.entries(GetSetsQueryTypeTitles).map(item => {
+            {Object.entries(GetSetsQueryTypeTitles).map((item, index) => {
               return (
                 <option
                   style={{ margin: '8px' }}
                   value={item[0]}
+                  key={index}
                 >
                   {item[1]}
                 </option>
@@ -119,11 +141,12 @@ const BrowseSets: React.FC = () => {
                   setFormStateField('exerciseType', e.target.value)
                 }
               >
-                {Object.entries(SetTypeTitles).map(item => {
+                {Object.entries(SetTypeTitles).map((item, index) => {
                   return (
                     <option
                       style={{ margin: '8px' }}
                       value={item[0]}
+                      key={index}
                     >
                       {item[1]}
                     </option>
@@ -145,7 +168,10 @@ const BrowseSets: React.FC = () => {
             </>
           )}
         </div>
-        <div style={{ marginTop: '20px' }}>{JSON.stringify(apiData)}</div>
+        <ListOfSets
+          items={apiData}
+          deleteItem={handleRemoveSet}
+        />
       </div>
     </>
   )

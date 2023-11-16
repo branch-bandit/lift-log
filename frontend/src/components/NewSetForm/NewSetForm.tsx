@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import { CreateSetFormParams, SetTypeTitles } from './NewSetForm.types'
-import { CreateSetApiReqParams, SetType } from '../../utils/common.types'
-import { postNewSet } from '../../utils/tools'
+import { SetType } from '../../utils/common.types'
+import { getCreateSetApiReqParams, postNewSet } from '../../utils/tools'
 
 const initialState = {
   formState: {
@@ -13,32 +13,11 @@ const initialState = {
   },
 }
 
-const getApiReqParams = (
-  formParams: CreateSetFormParams
-): CreateSetApiReqParams | false => {
-  const {
-    exerciseType: set_type,
-    failureRep: failure_at,
-    reps,
-    weight,
-    wasFailure,
-  } = formParams
-  const RequiredParams = { set_type, reps, weight }
-
-  if (Object.values(RequiredParams).includes(undefined)) {
-    //todo form validation errors
-    console.log('form error - required value missing')
-    return false
-  }
-
-  if (wasFailure) {
-    return { ...RequiredParams, failure_at } as CreateSetApiReqParams
-  }
-
-  return RequiredParams as CreateSetApiReqParams
+interface NewSetFormProps {
+  setNeedsUpdate: Dispatch<SetStateAction<boolean>>
 }
 
-const NewSetForm: React.FC = () => {
+const NewSetForm: React.FC<NewSetFormProps> = ({ setNeedsUpdate }) => {
   const [formState, setFormState] = useState<CreateSetFormParams>(
     initialState.formState
   )
@@ -52,16 +31,17 @@ const NewSetForm: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
-    const reqParams = getApiReqParams(formState)
+    const reqParams = getCreateSetApiReqParams(formState)
     if (!reqParams) return
 
     await postNewSet(reqParams)
-      .then(() =>
+      .then(() => {
         setFormState({
           ...initialState.formState,
           exerciseType: formState.exerciseType,
         })
-      )
+        setNeedsUpdate(true)
+      })
       .catch(console.error)
   }
 
@@ -70,22 +50,23 @@ const NewSetForm: React.FC = () => {
       <form
         onSubmit={handleSubmit}
         style={{
-          maxWidth: '600px',
+          width: '800px',
           boxSizing: 'border-box',
-          margin: '40px 20vw 10px 20vw',
-          padding: '8vh 70px 2vh 70px',
+          margin: 'auto',
+          padding: '5vh 5vw 5vh 5vw',
           fontFamily: 'roboto',
           display: 'grid',
+          borderBottom: '1px solid grey',
         }}
       >
         <div
           style={{
-            padding: '3% 5% 3% 0',
-            marginBottom: '20px',
+            padding: '0 100px 20px 100px',
+            marginBottom: '10px',
             display: 'grid',
             gridTemplateColumns: '63% 34%',
             gridTemplateRows: '12% 12% 12% 12% 12%',
-            gap: '2vh',
+            gap: '3vh',
             height: '200px',
           }}
         >
@@ -148,7 +129,7 @@ const NewSetForm: React.FC = () => {
         </div>
         <button
           type="submit"
-          style={{ height: '36px' }}
+          style={{ height: '36px', width: '500px', margin: 'auto' }}
         >
           Submit set
         </button>

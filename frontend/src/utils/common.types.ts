@@ -22,3 +22,12 @@ export enum SetType {
   BARBELL_BENCH_PRESS = 'BARBELL_BENCH_PRESS',
   DUMBELL_INCLINE_PRESS = 'DUMBELL_INCLINE_PRESS',
 }
+
+export type ApiResponseSetItem = {
+  id: string
+  set_type: SetType
+  date: Date
+  reps: number
+  weight: number
+  failure_at: number | null
+}
